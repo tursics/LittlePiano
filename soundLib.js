@@ -277,13 +277,13 @@ SoundLib.prototype.loadAssetAudioElement = function(url, index)
 	audioElement.id = 'audio' + index;
 	audioElement.innerHTML = '<source src="' + url + '" type="audio/mpeg">';
 	audioElement.preload = 'auto';
-	audioElement.oncanplaythrough = function() {
+	audioElement.addEventListener('canplaythrough', function() {
 		loader.loadAssetDataList[index] = this.id;
 		if(++loader.loadCount == loader.loadAssetUrlList.length) {
 			loader.loadAssetUrlList = [];
 			loader.loadCallback();
 		}
-	};
+	});
 	audioElement.onerror = function() {
 		console.error('SoundLib: loading error');
 	};
