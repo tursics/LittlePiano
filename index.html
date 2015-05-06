@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="msapplication-tap-highlight" content="no" />
+	<script type="text/javascript" charset="utf-8" src="soundLib.js"></script>
+	<script type="text/javascript" charset="utf-8" src="piano.js"></script>
+</head>
+<body>
+<div id="log"></div>
+<script type="text/javascript">
+	document.getElementById('log').innerHTML = 'Ready to start';
+
+	window.addEventListener('load', init, false);
+
+	function init()
+	{
+		var sound = new SoundLib();
+		if( sound.isOk()) {
+			document.getElementById('log').innerHTML = 'Loading music...';
+
+			sound.loadAssets([
+				// convert youtube to mp3: http://www.youtube-mp3.org/de
+//				'assets/berlinerluft.mp3', // http://www.youtube.com/watch?v=KMU0tzLwhbE
+//				'assets/9000g.wav',        // file://wxWidgets/samples/sound
+				'assets/stephan.mp3',
+			], function() {
+				addStartButton( sound);
+			});
+		} else {
+			document.getElementById('log').innerHTML = 'Web Audio API is not supported in this browser';
+		}
+	}
+
+	var mainSound;
+	var tmpSound;
+
+	function addStartButton(sound)
+	{
+		tmpSound = sound;
+
+		var str = '';
+		str += '<button onclick="playMusic(tmpSound);">Start</button>';
+		document.getElementById('log').innerHTML = str;
+	}
+
+	function playMusic(sound)
+	{
+		var str = '';
+		str += 'Volume: <input type="range" oninput="changeVolume(this);" value="100" max="100" min="0"><br>';
+		str += 'Speed: <input type="range" oninput="changeSpeed(this);" value="100" max="200" min="1"><br>';
+		document.getElementById('log').innerHTML = str;
+
+		mainSound = sound.play(0);
+//		var s1 = sound.play(1, sound.getCurrentTime() + 0.5);
+//		var s2 = sound.play(1, sound.getCurrentTime() + 2);
+
+		mainSound.source.loop = true;
+//		s1.gainNode.gain.value = 0.5;
+//		s2.gainNode.gain.value = 0.8;
+//		s2.source.playbackRate.value = .5;
+	}
+
+	function changeVolume(element)
+	{
+		var volume = element.value;
+		mainSound.gainNode.gain.value = volume / 100;
+
+		console.log('Sound volume: ' + mainSound.gainNode.gain.value);
+	}
+
+	function changeSpeed(element)
+	{
+		var speed = element.value;
+		mainSound.source.playbackRate.value = speed / 100;
+
+		console.log('Sound speed: ' + mainSound.source.playbackRate.value);
+	}
+
+</script>
+</body>
+</html>
