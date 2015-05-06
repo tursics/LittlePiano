@@ -23,11 +23,28 @@
 //	sound.play(0);
 //	sound.play(0, sound.getCurrentTime() + 0.100);
 
+// Get the volume of an asset. Initial state is 1.0
+//	sound.getVolume(asset);
+
+// Set the volume of an asset. From 0.0 to 1.0
+//	sound.setVolume(asset, 0.5);
+
+// Get the speed (playback rate) of an asset. 1.0 is normal speed
+//	sound.getSpeed(asset);
+
+// Set the speed (playback rate) of an asset. 1.0 is normal speed, 2.0 double speed,
+// -1.0 is backwards normal speed (not fully supported yet)
+//	sound.setSpeed(asset, 0.5);
 
 // ---------------------------------------------------------------------------------------
 
 function SoundLib()
 {
+	this.WEBAUDIOAPI = 1;
+	this.AUDIOELEMENT = 2;
+	this.NOAUDIO = 3;
+
+	this.support = this.NOAUDIO;
 	this.context = null;
 	this.loadAssetUrlList = [];
 	this.loadAssetDataList = [];
@@ -37,8 +54,16 @@ function SoundLib()
 	try {
 		window.AudioContext = window.AudioContext || window.webkitAudioContext;
 		this.context = new AudioContext();
+		this.support = this.WEBAUDIOAPI;
 	} catch(e) {
-		console.error('Web Audio API not supported');
+		console.log('Web Audio API not supported');
+
+		var audio = document.createElement('audio');
+		if( '' != audio.canPlayType('audio/mpeg')) {
+			this.support = this.AUDIOELEMENT;
+		} else {
+			console.log('HTML Audio Element does not support mp3');
+		}
 	}
 }
 
@@ -46,7 +71,7 @@ function SoundLib()
 
 SoundLib.prototype.isOk = function()
 {
-	return null != this.context;
+	return this.support != this.NOAUDIO;
 }
 
 // ---------------------------------------------------------------------------------------
@@ -58,7 +83,7 @@ SoundLib.prototype.loadAssets = function(assetList, callback)
 		return;
 	}
 	if( 0 != this.loadAssetUrlList.length) {
-		console.error('SoundLib loaded assets already');
+		console.error('SoundLib load assets already');
 		return;
 	}
 
@@ -69,7 +94,13 @@ SoundLib.prototype.loadAssets = function(assetList, callback)
 
 	if( 0 != this.loadAssetUrlList.length) {
 		for(var i = 0; i < this.loadAssetUrlList.length; ++i) {
-			this.loadAssetBuffer(this.loadAssetUrlList[i], i);
+			if( this.WEBAUDIOAPI == this.support) {
+				this.loadAssetAudioAPI(this.loadAssetUrlList[i], i);
+			} else if( this.AUDIOELEMENT == this.support) {
+				this.loadAssetAudioElement(this.loadAssetUrlList[i], i);
+			} else {
+				console.error('Unknown audio');
+			}
 		}
 	} else {
 		this.loadCallback();
@@ -89,33 +120,110 @@ SoundLib.prototype.play = function(number, time)
 		return;
 	}
 
-	var source = this.context.createBufferSource();
-	if(!source.start) {
-		source.start = source.noteOn;
-	}
-	if(!source.stop) {
-		source.stop = source.noteOff;
-	}
+	if( this.WEBAUDIOAPI == this.support) {
+		var source = this.context.createBufferSource();
+		if(!source.start) {
+			source.start = source.noteOn;
+		}
+		if(!source.stop) {
+			source.stop = source.noteOff;
+		}
 
-	source.buffer = this.loadAssetDataList[number];
+		source.buffer = this.loadAssetDataList[number];
 
-	if( typeof time == "undefined") {
-		source.start(0);
+		if( typeof time == "undefined") {
+			source.start(0);
+		} else {
+			source.start(time);
+		}
+
+		var gainNode = this.context.createGain();
+		source.connect(gainNode);
+		gainNode.connect(this.context.destination);
+
+		return {
+			source: source,
+			gainNode: gainNode
+		};
+	} else if( this.AUDIOELEMENT == this.support) {
+		var audio = document.getElementById(this.loadAssetDataList[number]);
+		audio.play();
+
+		if( typeof time != "undefined") {
+			console.error('Time parameter ignored');
+		}
+
+		return {
+			source: audio,
+		};
 	} else {
-		source.start(time);
+		console.error('Unknown audio');
 	}
-
-	var gainNode = this.context.createGain();
-	source.connect(gainNode);
-	gainNode.connect(this.context.destination);
-
-//	var gainNode = {};
-//	source.connect(this.context.destination);
 
 	return {
-		source: source,
-		gainNode: gainNode
+		source: null,
+		gainNode: null
 	};
+}
+
+// ---------------------------------------------------------------------------------------
+
+SoundLib.prototype.getVolume = function(asset)
+{
+	if( this.WEBAUDIOAPI == this.support) {
+		return asset.gainNode.gain.value;
+	} else if( this.AUDIOELEMENT == this.support) {
+		return asset.source.volume;
+	} else {
+		console.error('Unknown audio');
+	}
+
+	return 1;
+}
+
+// ---------------------------------------------------------------------------------------
+
+SoundLib.prototype.setVolume = function(asset, value)
+{
+	if( this.WEBAUDIOAPI == this.support) {
+		asset.gainNode.gain.value = value;
+	} else if( this.AUDIOELEMENT == this.support) {
+		asset.source.volume = value;
+	} else {
+		console.error('Unknown audio');
+	}
+}
+
+// ---------------------------------------------------------------------------------------
+
+SoundLib.prototype.getSpeed = function(asset)
+{
+	if( this.WEBAUDIOAPI == this.support) {
+		return asset.source.playbackRate.value;
+	} else if( this.AUDIOELEMENT == this.support) {
+		return asset.source.playbackRate;
+	} else {
+		console.error('Unknown audio');
+	}
+
+	return 1;
+}
+
+// ---------------------------------------------------------------------------------------
+
+SoundLib.prototype.setSpeed = function(asset, value)
+{
+	if( value < 0.01) {
+		value = 0.01;
+	}
+
+	if( this.WEBAUDIOAPI == this.support) {
+		asset.source.playbackRate.value = value;
+	} else if( this.AUDIOELEMENT == this.support) {
+		asset.source.playbackRate = value;
+	} else {
+		console.error('Unknown audio');
+	}
 }
 
 // ---------------------------------------------------------------------------------------
@@ -132,7 +240,7 @@ SoundLib.prototype.getCurrentTime = function()
 
 // ---------------------------------------------------------------------------------------
 
-SoundLib.prototype.loadAssetBuffer = function(url, index)
+SoundLib.prototype.loadAssetAudioAPI = function(url, index)
 {
 	var loader = this;
 
@@ -152,11 +260,34 @@ SoundLib.prototype.loadAssetBuffer = function(url, index)
 		}, function(error) {
 			console.error('Decode audio data error', error);
 		});
-	}
+	};
 	request.onerror = function() {
 		console.error('SoundLib: XHR error');
-	}
+	};
 	request.send();
+}
+
+// ---------------------------------------------------------------------------------------
+
+SoundLib.prototype.loadAssetAudioElement = function(url, index)
+{
+	var loader = this;
+
+	var audioElement = document.createElement('audio');
+	audioElement.id = 'audio' + index;
+	audioElement.innerHTML = '<source src="' + url + '" type="audio/mpeg">';
+	audioElement.preload = 'auto';
+	audioElement.oncanplaythrough = function() {
+		loader.loadAssetDataList[index] = this.id;
+		if(++loader.loadCount == loader.loadAssetUrlList.length) {
+			loader.loadAssetUrlList = [];
+			loader.loadCallback();
+		}
+	};
+	audioElement.onerror = function() {
+		console.error('SoundLib: loading error');
+	};
+	document.body.appendChild(audioElement);
 }
 
 // ---------------------------------------------------------------------------------------
