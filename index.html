@@ -29,53 +29,40 @@
 				addStartButton( sound);
 			});
 		} else {
-			document.getElementById('log').innerHTML = 'Web Audio API is not supported in this browser';
+			document.getElementById('log').innerHTML = '.mp3 files are not supported in this browser';
 		}
 	}
 
-	var mainSound;
-	var tmpSound;
-
 	function addStartButton(sound)
 	{
-		tmpSound = sound;
-
 		var str = '';
-		str += '<button onclick="playMusic(tmpSound);">Start</button>';
+		str += '<button id="start">Start</button>';
 		document.getElementById('log').innerHTML = str;
+
+		document.getElementById('start').onclick = function() {
+			playMusic(sound);
+		};
 	}
 
 	function playMusic(sound)
 	{
 		var str = '';
-		str += 'Volume: <input type="range" oninput="changeVolume(this);" value="100" max="100" min="0"><br>';
-		str += 'Speed: <input type="range" oninput="changeSpeed(this);" value="100" max="200" min="1"><br>';
+		str += 'Volume: <input id="volume" type="range" value="100" max="100" min="0"><br>';
+		str += 'Speed:  <input id="speed"  type="range" value="100" max="200" min="1"><br>';
 		document.getElementById('log').innerHTML = str;
 
-		mainSound = sound.play(0);
-//		var s1 = sound.play(1, sound.getCurrentTime() + 0.5);
-//		var s2 = sound.play(1, sound.getCurrentTime() + 2);
-
+		var mainSound = sound.play(0);
 		mainSound.source.loop = true;
-//		s1.gainNode.gain.value = 0.5;
-//		s2.gainNode.gain.value = 0.8;
-//		s2.source.playbackRate.value = .5;
-	}
 
-	function changeVolume(element)
-	{
-		var volume = element.value;
-		mainSound.gainNode.gain.value = volume / 100;
+		document.getElementById('volume').oninput = function() {
+			sound.setVolume(mainSound, this.value / 100);
+			console.log('Sound volume: ' + sound.getVolume(mainSound));
+		};
 
-		console.log('Sound volume: ' + mainSound.gainNode.gain.value);
-	}
-
-	function changeSpeed(element)
-	{
-		var speed = element.value;
-		mainSound.source.playbackRate.value = speed / 100;
-
-		console.log('Sound speed: ' + mainSound.source.playbackRate.value);
+		document.getElementById('speed').oninput = function() {
+			sound.setSpeed(mainSound, this.value / 100);
+			console.log('Sound speed: ' + sound.getSpeed(mainSound));
+		};
 	}
 
 </script>
