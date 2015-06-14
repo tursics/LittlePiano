@@ -21,17 +21,23 @@ Die Bilder der Patente beschreiben gut, worum es hier geht - und das früher sol
 
 # App
 
-Die App wird erstmal nur im Browser laufen. Weitere Schritte kommen später
+Die App wird erstmal nur im Browser laufen. Weitere Schritte kommen später. Eine Testversion befindet sich unter http://tursics.de/sample/piano/
 
 # Testgeräte
 
+* iOS 8 auf einem iPad 3 (Browser)
+  * Sound-Dateien können nicht rückwärts abgespielt werden
 * BlackBerry OS 10 auf einem Z10 (Browser)
   * UNGEEIGNET
   * Geschwindigkeitsänderungen führen zu Stille von ca. 3 Sekunden und anschließender neuer Geschwidigkeit
   * NoSleep-Lib funktioniert nicht: Der Bildschirm geht ständig aus
-* iOS 8 auf einem iPad 3 (Browser)
-  * Sound-Dateien können nicht rückwärts abgespielt werden
 * Android 2.x auf einem Sony Ericsson Xperia (Browser)
   * UNGEEIGNET
   * Darstellungsproblem (Exceptions?)
   * kein Kompass
+* Windows 8 auf einem Laptop (Browser)
+  * UNGEEIGNET
+  * Kein Gyroskop im Computer verbaut
+* OS 10.10 auf einem iMac (Browser)
+  * UNGEEIGNET
+  * Kein Gyroskop im Computer verbaut
