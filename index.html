@@ -4,51 +4,68 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<meta name="msapplication-tap-highlight" content="no" />
-	<script type="text/javascript" charset="utf-8" src="soundLib.js"></script>
-	<script type="text/javascript" charset="utf-8" src="piano.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/circleLib.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/compassLib.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/NoSleep-0.5.0.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/piano.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/soundLib.js"></script>
 </head>
-<body>
+<body style="overflow:hidden;">
+<div id="circle"></div>
 <div id="log"></div>
 <script type="text/javascript">
-	document.getElementById('log').innerHTML = 'Ready to start';
-
 	window.addEventListener('load', init, false);
+
+	var circle = null;
+	var compass = null;
+	var sound = null;
 
 	function init()
 	{
-		var sound = new SoundLib();
+		var noSleep = new NoSleep();
+		noSleep.enable();
+
+		circle = new CircleLib('circle');
+		compass = new CompassLib();
+		sound = new SoundLib();
+
 		if( sound.isOk()) {
-			document.getElementById('log').innerHTML = 'Loading music...';
+			circle.text( 'Loading music...', 1);
 
 			sound.loadAssets([
 				// convert youtube to mp3: http://www.youtube-mp3.org/de
 //				'assets/berlinerluft.mp3', // http://www.youtube.com/watch?v=KMU0tzLwhbE
 //				'assets/9000g.wav',        // file://wxWidgets/samples/sound
-				'assets/stephan.mp3',
+//				'assets/stephan.mp3',
+//				'assets/pizzzzzzzz.mp3',
+				'assets/interlude.mp3',
 			], function() {
 				addStartButton( sound);
 			});
 		} else {
-			document.getElementById('log').innerHTML = '.mp3 files are not supported in this browser';
+			circle.text( 'Can\'t play music. Sorry', .8);
 		}
 	}
 
 	function addStartButton(sound)
 	{
-		var str = '';
-		str += '<button id="start">Start</button>';
-		document.getElementById('log').innerHTML = str;
+		circle.text( 'Start', 3);
+		circle.click( OnStartButton);
+	}
 
-		document.getElementById('start').onclick = function() {
-			playMusic(sound);
-		};
+	function OnStartButton()
+	{
+		circle.click( null);
+
+		compass.setNorth();
+		playMusic(sound);
 	}
 
 	function playMusic(sound)
 	{
 		var str = '';
 		str += 'Volume: <input id="volume" type="range" value="100" max="100" min="0"><br>';
-		str += 'Speed:  <input id="speed"  type="range" value="100" max="200" min="1"><br>';
+		str += 'Rotate your device to change the speed of the music';
 		document.getElementById('log').innerHTML = str;
 
 		var mainSound = sound.play(0);
@@ -59,10 +76,32 @@
 			console.log('Sound volume: ' + sound.getVolume(mainSound));
 		};
 
-		document.getElementById('speed').oninput = function() {
-			sound.setSpeed(mainSound, this.value / 100);
-			console.log('Sound speed: ' + sound.getSpeed(mainSound));
-		};
+		if( compass.isOk()) {
+			circle.text( '0°', 1);
+		}
+
+		compass.watch( function( degrees) {
+			circle.rotate( -degrees);
+//			circle.text( degrees + '°', 1);
+		});
+
+		var timer = setInterval( function() {
+			speedTimer()
+		}, 100);
+
+		var lastDegree = compass.gpsDegree;
+		function speedTimer() {
+			var diff = lastDegree - compass.gpsDegree;
+			if( diff > 90) {
+				diff -= 360;
+			} else if( diff < -90) {
+				diff += 360;
+			}
+			lastDegree = compass.gpsDegree;
+
+			circle.text( diff, 1);
+			sound.setSpeed(mainSound, .5 + diff / 10);
+		}
 	}
 
 </script>
