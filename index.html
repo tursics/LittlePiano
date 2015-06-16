@@ -4,18 +4,20 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<meta name="msapplication-tap-highlight" content="no" />
+	<script type="text/javascript" charset="utf-8" src="scripts/backgroundLib.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/circleLib.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/compassLib.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/NoSleep-0.5.0.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/piano.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/soundLib.js"></script>
 </head>
-<body style="overflow:hidden;">
+<body>
 <div id="circle"></div>
-<div id="log"></div>
+<div id="log" style="color:white;"></div>
 <script type="text/javascript">
 	window.addEventListener('load', init, false);
 
+	var background = null;
 	var circle = null;
 	var compass = null;
 	var sound = null;
@@ -25,6 +27,7 @@
 		var noSleep = new NoSleep();
 		noSleep.enable();
 
+		background = new BackgroundLib();
 		circle = new CircleLib('circle');
 		compass = new CompassLib();
 		sound = new SoundLib();
