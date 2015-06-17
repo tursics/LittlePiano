@@ -26,6 +26,7 @@ BackgroundLib.prototype.init = function()
 {
 	this.OnResize();
 
+	this.element.style.fontFamily = 'inglobal';
 	this.element.style.overflow = 'hidden';
 
 	this.setGradient('#204490','#d0367f');
