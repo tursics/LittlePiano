@@ -56,15 +56,47 @@ CircleLib.prototype.rotate = function(degree)
 
 // ---------------------------------------------------------------------------------------
 
-CircleLib.prototype.text = function(str,fontSize)
+CircleLib.prototype.text = function(str,fontSize,callback)
+{
+	this.changeContent( function() {
+		this.textNow(str,fontSize,true);
+	},callback);
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.textNow = function(str,fontSize,hide)
 {
 	this.fontSize = fontSize;
 
 	var elementHeight = parseInt(this.element.style.height);
 	var fontSizeHeight = parseInt(elementHeight/10*this.fontSize);
 
-	this.element.innerHTML = str;
+	if( undefined === hide) {
+		hide = false;
+	}
+
+	if( hide) {
+		this.element.innerHTML = '<div style="display:none;opacity:0;filter:alpha(opacity=100);">'+str+'</div>';
+	} else {
+		this.element.innerHTML = '<div>'+str+'</div>';
+	}
 	this.element.style.fontSize = fontSizeHeight+'px';
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.textIcon = function(icon,callback)
+{
+	this.text('<i class="fa fa-'+icon+'" style="line-height:inherit;"></i>',2,callback);
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.textSpinner = function(callback)
+{
+//	this.text('<i class="fa fa-spinner fa-spin" style="line-height:inherit;"></i>',2,callback);
+	this.text('<i class="fa fa-spinner fa-pulse" style="line-height:inherit;"></i>',2,callback);
 }
 
 // ---------------------------------------------------------------------------------------
@@ -130,6 +162,83 @@ CircleLib.prototype.setGradient = function()
 
 	// modern css
 	this.element.style.background = 'radial-gradient(ellipse at center,'+innerColor+' 0%,'+innerColor+' '+innerPos+','+borderColor+' '+borderPos+','+outerColor+' '+outerPos+','+outerColor+' '+frame1Pos+','+frameColor+' '+frame2Pos+','+frameColor+' 100%)';
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.changeContent = function( changeCallback, finishCallback)
+{
+	this.changeCallback = changeCallback;
+	this.finishCallback = finishCallback;
+
+	this.changeContentStep1();
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.changeContentStep1 = function()
+{
+	var opacity = 1;
+	var element = this.element.firstChild;
+	var next = this.changeContentStep2;
+	var nextThis = this;
+
+	if( '' == this.element.innerHTML) {
+		this.changeContentStep2();
+		return;
+	}
+
+	var timer = setInterval(function() {
+		if(opacity <= 0.1) {
+			clearInterval(timer);
+			element.style.display = 'none';
+			next.call(nextThis);
+		}
+
+		element.style.opacity = opacity;
+		element.style.filter = 'alpha(opacity='+opacity*100+')';
+		opacity-=opacity*0.3;
+	},50);
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.changeContentStep2 = function()
+{
+	this.element.innerHTML = '';
+
+	this.changeCallback.call(this);
+
+	this.changeContentStep3();
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.changeContentStep3 = function()
+{
+	var opacity = 0.1;
+	var element = this.element.firstChild;
+	var next = this.changeContentStep4;
+	var nextThis = this;
+
+	element.style.display = 'block';
+	var timer = setInterval(function() {
+		if(opacity >= 1) {
+			clearInterval(timer);
+			next.call(nextThis);
+		}
+
+		element.style.opacity = opacity;
+		element.style.filter = 'alpha(opacity='+opacity*100+')';
+		opacity+=opacity*0.1;
+	},10);
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.changeContentStep4 = function()
+{
+	this.finishCallback.call(this);
 }
 
 // ---------------------------------------------------------------------------------------
