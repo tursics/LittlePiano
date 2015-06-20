@@ -86,21 +86,18 @@ CompassLib.prototype.watch = function( callback)
 
 	if( this.PHONEGAP == this.support) {
 		this.watcher = navigator.compass.watchHeading( function( degrees) {
-			degrees = parseInt( degrees);
-
 			if( watch.gpsDegree != degrees) {
 				watch.gpsDegree = degrees;
-				callback( watch.gpsDegree);
+				callback( parseInt( watch.gpsDegree));
 			}
 		});
 	} else if( this.WEBKITCOMPASS == this.support) {
 		this.watcher = function( event) {
 			var degrees = event.webkitCompassHeading;
-			degrees = parseInt( degrees);
 
 			if( watch.gpsDegree != degrees) {
 				watch.gpsDegree = degrees;
-				callback( watch.gpsDegree);
+				callback( parseInt( watch.gpsDegree));
 			}
 		};
 		window.addEventListener( 'deviceorientation', this.watcher);
@@ -113,11 +110,9 @@ CompassLib.prototype.watch = function( callback)
 				degrees -= 360;
 			}
 
-			degrees = parseInt( degrees);
-
 			if( watch.gpsDegree != degrees) {
 				watch.gpsDegree = degrees;
-				callback( watch.gpsDegree);
+				callback( parseInt( watch.gpsDegree));
 			}
 		};
 		window.addEventListener( 'deviceorientation', this.watcher);
