@@ -64,16 +64,96 @@
 //				'assets/pizzzzzzzz.mp3',
 				'assets/interlude.mp3',
 			], function() {
-				addStartButton( sound);
+				showMainMenu( sound);
 			});
 		});
 	}
 
-	function addStartButton(sound)
+	function showMainMenu(sound)
 	{
-		circle.textIcon( 'play', function() {
-			circle.click( OnStartButton);
-		});
+		var menu=new Array(
+		{
+			icon:'play',
+			callback:function() {
+				circle.click( OnStartButton);
+			}
+		},
+		{
+			icon:'headphones',
+			callback:function() {
+				// scratch the music
+				// icon: old gramophone record
+			}
+		},
+		{
+			icon:'music',
+			callback:function() {
+				// show available sound files
+			}
+		},
+		{
+			icon:'refresh',
+			callback:function() {
+				// shows the tutorial
+				// icon: a winder
+			}
+		},
+		{
+			icon:'info',
+			callback:function() {
+				// the about text
+			}
+		}
+		);
+		circle.textMenu( menu);
+	}
+
+	function showPlayMenu(sound)
+	{
+		var menu=new Array(
+		{
+			icon:'forward',
+			callback:function() {
+				// set music position
+			}
+		},
+		{
+			icon:'volume-down',
+			callback:function() {
+			}
+		},
+		{
+			icon:'volume-up',
+			callback:function() {
+			}
+		},
+		{
+			icon:'lightbulb-o',
+			callback:function() {
+				// turn on the philips hue background lights
+				// icon: hue bulb
+			}
+		},
+		{
+			icon:'arrow-up',
+			callback:function() {
+				// rotate to north
+			}
+		},
+		{
+			icon:'pause',
+			callback:function() {
+				// pause the music
+			}
+		},
+		{
+			icon:'eject',
+			callback:function() {
+				// eject the current sound
+			}
+		}
+		);
+		circle.textMenu( menu);
 	}
 
 	function OnStartButton()
@@ -100,7 +180,7 @@
 		};
 
 		if( compass.isOk()) {
-			circle.text( '0', 1, function() {
+//			circle.text( '0', 1, function() {
 				compass.watch( function( degrees) {
 					circle.rotate( -degrees);
 //					circle.text( degrees + '°', 1);
@@ -120,10 +200,13 @@
 					}
 					lastDegree = compass.gpsDegree;
 
-					circle.textNow( diff, 1);
+//					circle.textNow( diff, 1);
 					sound.setSpeed(mainSound, .5 + diff / 10);
+
 				}
-			});
+
+				showPlayMenu();
+//			});
 		}
 	}
 
