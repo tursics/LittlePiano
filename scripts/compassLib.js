@@ -72,6 +72,13 @@ CompassLib.prototype.isOk = function()
 
 // ---------------------------------------------------------------------------------------
 
+CompassLib.prototype.resetNorth = function()
+{
+	this.gpsDiff = 0;
+}
+
+// ---------------------------------------------------------------------------------------
+
 CompassLib.prototype.setNorth = function()
 {
 	this.gpsDiff = -this.gpsDegree;

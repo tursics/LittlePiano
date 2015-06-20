@@ -31,6 +31,7 @@
 	var circle = null;
 	var compass = null;
 	var sound = null;
+	var mainSound = null;
 
 	function init()
 	{
@@ -64,25 +65,27 @@
 //				'assets/pizzzzzzzz.mp3',
 				'assets/interlude.mp3',
 			], function() {
-				showMainMenu( sound);
+				showMainMenu();
 			});
 		});
 	}
 
-	function showMainMenu(sound)
+	function showMainMenu()
 	{
 		var menu=new Array(
 		{
 			icon:'play',
 			callback:function() {
-				circle.click( OnStartButton);
+				playMusic(sound,false);
 			}
 		},
 		{
 			icon:'headphones',
+			// icon: old gramophone record
 			callback:function() {
 				// scratch the music
-				// icon: old gramophone record
+				compass.setNorth();
+				playMusic(sound,true);
 			}
 		},
 		{
@@ -105,10 +108,53 @@
 			}
 		}
 		);
+		circle.textMenu(menu);
+	}
+
+	function showPlayMenu()
+	{
+		var menu=new Array(
+		{
+			icon:'forward',
+			callback:function() {
+				// set music position
+			}
+		},
+		{
+			icon:'volume-down',
+			callback:function() {
+			}
+		},
+		{
+			icon:'volume-up',
+			callback:function() {
+			}
+		},
+		{
+			icon:'lightbulb-o',
+			callback:function() {
+				// turn on the philips hue background lights
+				// icon: hue bulb
+			}
+		},
+		{
+			icon:'pause',
+			callback:function() {
+				// pause the music
+			}
+		},
+		{
+			icon:'eject',
+			callback:function() {
+				mainSound.source.stop();
+				showMainMenu();
+			}
+		}
+		);
 		circle.textMenu( menu);
 	}
 
-	function showPlayMenu(sound)
+	function showScratchMenu()
 	{
 		var menu=new Array(
 		{
@@ -137,41 +183,32 @@
 		{
 			icon:'arrow-up',
 			callback:function() {
-				// rotate to north
-			}
-		},
-		{
-			icon:'pause',
-			callback:function() {
-				// pause the music
+				compass.setNorth();
 			}
 		},
 		{
 			icon:'eject',
 			callback:function() {
-				// eject the current sound
+				compass.resetNorth();
+				mainSound.source.stop();
+				compass.unwatch();
+				showMainMenu();
 			}
 		}
 		);
 		circle.textMenu( menu);
 	}
 
-	function OnStartButton()
-	{
-		circle.click( null);
-
-		compass.setNorth();
-		playMusic(sound);
-	}
-
-	function playMusic(sound)
+	function playMusic(sound,scratch)
 	{
 		var str = '';
 		str += 'Volume: <input id="volume" type="range" value="100" max="100" min="0"><br>';
-		str += 'Rotate your device to change the speed of the music';
+		if(scratch) {
+			str += 'Rotate your device to change the speed of the music';
+		}
 		document.getElementById('log').innerHTML = str;
 
-		var mainSound = sound.play(0);
+		mainSound = sound.play(0);
 		mainSound.source.loop = true;
 
 		document.getElementById('volume').oninput = function() {
@@ -179,11 +216,10 @@
 			console.log('Sound volume: ' + sound.getVolume(mainSound));
 		};
 
-		if( compass.isOk()) {
-//			circle.text( '0', 1, function() {
+		if(scratch) {
+			if( compass.isOk()) {
 				compass.watch( function( degrees) {
 					circle.rotate( -degrees);
-//					circle.text( degrees + '°', 1);
 				});
 
 				var timer = setInterval( function() {
@@ -205,8 +241,11 @@
 
 				}
 
-				showPlayMenu();
-//			});
+				showScratchMenu();
+			}
+		} else {
+			sound.setSpeed(mainSound,1);
+			showPlayMenu();
 		}
 	}
 
