@@ -144,7 +144,10 @@ CircleLib.prototype.textMenu = function(array)
 	}
 
 	var circle=this;
-	this.text(str,fontSize,function() {
+	this.changeContent( function() {
+		circle.rotate(0);
+		this.textNow(str,fontSize,true);
+	},function() {
 		for(var i=0;i<array.length;++i) {
 			document.getElementById('circle'+i).onclick=array[i].callback;
 //			document.getElementById('circle'+i).onclick=function() {
