@@ -2,7 +2,8 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="viewport" content="width=device-width;initial-scale=1.0;maximum-scale=1.0;user-scalable=no;" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="msapplication-tap-highlight" content="no" />
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 	<script type="text/javascript" charset="utf-8" src="scripts/backgroundLib.js"></script>
@@ -37,6 +38,8 @@
 	{
 		var noSleep = new NoSleep();
 		noSleep.enable();
+
+		preventOverscroll();
 
 		background = new BackgroundLib();
 		circle = new CircleLib('circle');
@@ -146,7 +149,7 @@
 		{
 			icon:'eject',
 			callback:function() {
-				mainSound.source.stop();
+				mainSound.source.stop(0);
 				showMainMenu();
 			}
 		}
@@ -190,7 +193,7 @@
 			icon:'eject',
 			callback:function() {
 				compass.resetNorth();
-				mainSound.source.stop();
+				mainSound.source.stop(0);
 				compass.unwatch();
 				showMainMenu();
 			}
@@ -247,6 +250,15 @@
 			sound.setSpeed(mainSound,1);
 			showPlayMenu();
 		}
+	}
+
+	function preventOverscroll()
+	{
+		document.body.addEventListener('touchmove', function(event){
+			if(!event._isScroller) {
+				event.preventDefault()
+			}
+		});
 	}
 
 </script>
