@@ -23,8 +23,6 @@
 	</style>
 </head>
 <body>
-<div id="circle"></div>
-<div id="log" style="color:white;"></div>
 <script type="text/javascript">
 	window.addEventListener('load', init, false);
 
@@ -50,7 +48,7 @@
 			circle.text( 'Little Piano', 1, function() {
 				setTimeout( function() {
 					loadSounds(sound);
-				}, 3000);
+				}, 2000);
 			});
 		} else {
 			circle.text( 'Can\'t play music. Sorry', .8, function() {});
@@ -68,25 +66,29 @@
 //				'assets/pizzzzzzzz.mp3',
 				'assets/interlude.mp3',
 			], function() {
-				showMainMenu();
+				showMenuMain();
 			});
 		});
 	}
 
-	function showMainMenu()
+	function showMenuMain()
 	{
 		var menu=new Array(
 		{
 			icon:'play',
 			callback:function() {
+				circle.show('info',false);
+				circle.show('help',false);
+
 				playMusic(sound,false);
 			}
 		},
 		{
-			icon:'headphones',
-			// icon: old gramophone record
+			icon:'headphones', // icon: old gramophone record
 			callback:function() {
-				// scratch the music
+				circle.show('info',false);
+				circle.show('help',false);
+
 				compass.setNorth();
 				playMusic(sound,true);
 			}
@@ -94,50 +96,64 @@
 		{
 			icon:'music',
 			callback:function() {
-				// show available sound files
-			}
-		},
-		{
-			icon:'refresh',
-			callback:function() {
-				// shows the tutorial
-				// icon: a winder
-			}
-		},
-		{
-			icon:'info',
-			callback:function() {
-				// the about text
+				circle.show('info',false);
+				circle.show('help',false);
+
+				showMenuSoundFiles();
 			}
 		}
 		);
+
+		circle.show('info',true,function() {
+			circle.show('info',false);
+			circle.show('help',false);
+
+			showMenuInfo();
+		});
+		circle.show('help',true,function() {
+			circle.show('info',false);
+			circle.show('help',false);
+
+			showMenuHelp();
+		});
+
 		circle.textMenu(menu);
 	}
 
-	function showPlayMenu()
+	function showMenuSoundFiles()
+	{
+		circle.show('close',true,function() {
+			circle.show('close',false);
+			showMenuMain();
+		});
+		circle.text('No sound files found (to be done)',.5,function() {});
+	}
+
+	function showMenuInfo()
+	{
+		circle.show('close',true,function() {
+			circle.show('close',false);
+			showMenuMain();
+		});
+		circle.text('Some infos about "Little Piano"...',.5,function() {});
+	}
+
+	function showMenuHelp()
+	{
+		circle.show('close',true,function() {
+			circle.show('close',false);
+			showMenuMain();
+		});
+		circle.text('Rotate your device to change the speed of the music',.3,function() {});
+	}
+
+	function showMenuPlay()
 	{
 		var menu=new Array(
 		{
 			icon:'forward',
 			callback:function() {
 				// set music position
-			}
-		},
-		{
-			icon:'volume-down',
-			callback:function() {
-			}
-		},
-		{
-			icon:'volume-up',
-			callback:function() {
-			}
-		},
-		{
-			icon:'lightbulb-o',
-			callback:function() {
-				// turn on the philips hue background lights
-				// icon: hue bulb
 			}
 		},
 		{
@@ -149,38 +165,33 @@
 		{
 			icon:'eject',
 			callback:function() {
+				circle.show('volume',false);
+				circle.show('light',false);
+
 				mainSound.source.stop(0);
-				showMainMenu();
+				showMenuMain();
 			}
 		}
 		);
+
+		circle.show('volume',true,showMenuVolumeUp,showMenuVolumeDown);
+		circle.show('light',true,function() {
+			circle.show('volume',false);
+			circle.show('light',false);
+
+			showMenuLight( false);
+		});
+
 		circle.textMenu( menu);
 	}
 
-	function showScratchMenu()
+	function showMenuScratch()
 	{
 		var menu=new Array(
 		{
 			icon:'forward',
 			callback:function() {
 				// set music position
-			}
-		},
-		{
-			icon:'volume-down',
-			callback:function() {
-			}
-		},
-		{
-			icon:'volume-up',
-			callback:function() {
-			}
-		},
-		{
-			icon:'lightbulb-o',
-			callback:function() {
-				// turn on the philips hue background lights
-				// icon: hue bulb
 			}
 		},
 		{
@@ -192,32 +203,70 @@
 		{
 			icon:'eject',
 			callback:function() {
+				circle.show('volume',false);
+				circle.show('light',false);
+
 				compass.resetNorth();
 				mainSound.source.stop(0);
 				compass.unwatch();
-				showMainMenu();
+				showMenuMain();
 			}
 		}
 		);
+
+		circle.show('volume',true,showMenuVolumeUp,showMenuVolumeDown);
+		circle.show('light',true,function() {
+			circle.show('volume',false);
+			circle.show('light',false);
+
+			showMenuLight( true);
+		});
+
 		circle.textMenu( menu);
+	}
+
+	function showMenuVolumeUp()
+	{
+		var volume = sound.getVolume(mainSound);
+
+		if( volume < .9) {
+			volume += .1;
+		} else {
+			volume = 1;
+		}
+		sound.setVolume(mainSound,volume);
+	}
+
+	function showMenuVolumeDown()
+	{
+		var volume = sound.getVolume(mainSound);
+
+		if( volume > .1) {
+			volume -= .1;
+		} else {
+			volume = 0;
+		}
+		sound.setVolume(mainSound,volume);
+	}
+
+	function showMenuLight(scratch)
+	{
+		circle.show('close',true,function() {
+			circle.show('close',false);
+
+			if( scratch) {
+				showMenuScratch();
+			} else {
+				showMenuPlay();
+			}
+		});
+		circle.text('No Philips Hue found (to be done)',.5,function() {});
 	}
 
 	function playMusic(sound,scratch)
 	{
-		var str = '';
-		str += 'Volume: <input id="volume" type="range" value="100" max="100" min="0"><br>';
-		if(scratch) {
-			str += 'Rotate your device to change the speed of the music';
-		}
-		document.getElementById('log').innerHTML = str;
-
 		mainSound = sound.play(0);
 		mainSound.source.loop = true;
-
-		document.getElementById('volume').oninput = function() {
-			sound.setVolume(mainSound, this.value / 100);
-			console.log('Sound volume: ' + sound.getVolume(mainSound));
-		};
 
 		if(scratch) {
 			if( compass.isOk()) {
@@ -244,11 +293,11 @@
 
 				}
 
-				showScratchMenu();
+				showMenuScratch();
 			}
 		} else {
 			sound.setSpeed(mainSound,1);
-			showPlayMenu();
+			showMenuPlay();
 		}
 	}
 

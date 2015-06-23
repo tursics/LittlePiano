@@ -2,14 +2,16 @@
 // all about main circle
 // ---------------------------------------------------------------------------------------
 
-function CircleLib( elementID)
+function CircleLib()
 {
 	this.element = null;
+	this.buttons = [];
 	this.clickCallback = null;
 	this.fontSize = 1;
 
 	try {
-		this.element = document.getElementById(elementID);
+		this.element = document.createElement('div');
+		document.body.appendChild(this.element);
 
 		var circle = this;
 		window.addEventListener('resize', function(){
@@ -21,10 +23,87 @@ function CircleLib( elementID)
 			}
 		};
 
+		this.create();
 		this.init();
 	} catch(e) {
 		console.log('Circle not ready');
 	}
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.create = function()
+{
+	var element = document.createElement('div');
+	element.innerHTML = '<div id="volumePort"><i id="volumeDown1" class="fa fa-volume-down fa-fw"></i><span style="padding:.3em 0;margin:0 .1em;border:solid .06em rgba(255,255,255,0.6);"></span><i id="volumeUp1" class="fa fa-volume-up fa-fw"></i></div>';
+	element.innerHTML += '<div id="volumeLand"><i id="volumeUp2" class="fa fa-volume-up fa-fw"></i><hr style="margin:.1em -.2em;border:solid .06em rgba(255,255,255,0.6);"><i id="volumeDown2" class="fa fa-volume-down fa-fw"></i></div>';
+	element.style.bottom = '.4em';
+	element.style.left = '.4em';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'volume',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
+	element.innerHTML = '<i class="fa fa-info fa-fw"></i>';
+	element.style.bottom = '.4em';
+	element.style.left = '.4em';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'info',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
+	element.innerHTML = '<i class="fa fa-question fa-fw"></i>'; // icon: a winder
+	element.style.bottom = '.4em';
+	element.style.right = '.4em';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'help',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
+	element.innerHTML = '<i class="fa fa-lightbulb-o fa-fw"></i>';
+	element.style.bottom = '.4em';
+	element.style.right = '.4em';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'light',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
+	element.innerHTML = '<i class="fa fa-close fa-fw"></i>';
+	element.style.top = '.4em';
+	element.style.right = '.4em';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'close',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
 }
 
 // ---------------------------------------------------------------------------------------
@@ -34,7 +113,6 @@ CircleLib.prototype.init = function()
 	this.OnResize();
 
 	this.element.style.position = 'absolute';
-//	this.element.style.background = 'rgba(0,0,0,.3)';
 	this.element.style.color = '#ffffff';
 	this.element.style.zIndex = '10';
 	this.element.style.textAlign = 'center';
@@ -43,15 +121,115 @@ CircleLib.prototype.init = function()
 	this.element.style.MozUserSelect = 'none';
 	this.element.style.msUserSelect = 'none';
 	this.element.style.userSelect = 'none';
+	this.setGradient();
+
+	for( var i = 0; i < this.buttons.length; ++i) {
+		var element = this.buttons[i].element;
+
+		element.style.display = 'none';
+		element.style.opacity = '0';
+		element.style.filter = 'alpha(opacity=100)';
+		element.style.position = 'absolute';
+		element.style.background = 'rgba(255,255,255,.2)';
+		element.style.color = '#ffffff';
+		element.style.zIndex = '11';
+		element.style.textAlign = 'center';
+		element.style.webkitTouchCallout = 'none';
+		element.style.webkitUserSelect = 'none';
+		element.style.MozUserSelect = 'none';
+		element.style.msUserSelect = 'none';
+		element.style.userSelect = 'none';
+		element.style.border = 'solid .1em rgba(255,255,255,0.5)';
+		element.style.webkitBorderRadius = '3em';
+		element.style.MozBorderRadius = '3em';
+		element.style.borderRadius = '3em';
+		element.style.padding = '.3em .2em';
+
+		var circle = this;
+		if( 'volume' == circle.buttons[i].title) {
+			document.getElementById('volumeUp1').onclick = function() {
+				for( var i = 0; i < circle.buttons.length; ++i) {
+					if(( 'volume' == circle.buttons[i].title) && (null != circle.buttons[i].callback)) {
+						circle.buttons[i].callback.call(this);
+					}
+				}
+			};
+			document.getElementById('volumeUp2').onclick = function() {
+				for( var i = 0; i < circle.buttons.length; ++i) {
+					if(( 'volume' == circle.buttons[i].title) && (null != circle.buttons[i].callback)) {
+						circle.buttons[i].callback.call(this);
+					}
+				}
+			};
+			document.getElementById('volumeDown1').onclick = function() {
+				for( var i = 0; i < circle.buttons.length; ++i) {
+					if(( 'volume' == circle.buttons[i].title) && (null != circle.buttons[i].callback2)) {
+						circle.buttons[i].callback2.call(this);
+					}
+				}
+			};
+			document.getElementById('volumeDown2').onclick = function() {
+				for( var i = 0; i < circle.buttons.length; ++i) {
+					if(( 'volume' == circle.buttons[i].title) && (null != circle.buttons[i].callback2)) {
+						circle.buttons[i].callback2.call(this);
+					}
+				}
+			};
+		} else {
+			element.onclick = function() {
+				for( var i = 0; i < circle.buttons.length; ++i) {
+					var element = circle.buttons[i].element;
+					if(( this == element) && (null != circle.buttons[i].callback)) {
+						circle.buttons[i].callback.call(this);
+					}
+				}
+			};
+		}
+	}
 }
 
 // ---------------------------------------------------------------------------------------
 
 CircleLib.prototype.rotate = function(degree)
 {
-	this.element.style.webkitTransform = 'rotate('+degree+'deg)';
-	this.element.style.MozTransform = 'rotate('+degree+'deg)';
-	this.element.style.transform = 'rotate('+degree+'deg)';
+	function rotateElement(element)
+	{
+		element.style.webkitTransform = 'rotate('+degree+'deg)';
+		element.style.MozTransform = 'rotate('+degree+'deg)';
+		element.style.transform = 'rotate('+degree+'deg)';
+	}
+
+	rotateElement(this.element);
+
+	for( var i = 0; i < this.buttons.length; ++i) {
+		rotateElement( this.buttons[i].element);
+	}
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.show = function(title,on,callback,callback2)
+{
+	for( var i = 0; i < this.buttons.length; ++i) {
+		if( this.buttons[i].title == title) {
+			this.buttons[i].show = (on == true ? true : false);
+			if( this.buttons[i].show) {
+				if( undefined === callback) {
+					callback = null;
+				}
+				if( undefined === callback2) {
+					callback2 = null;
+				}
+
+				this.buttons[i].callback = callback;
+				this.buttons[i].callback2 = callback2;
+			} else {
+				this.buttons[i].callback = null;
+				this.buttons[i].callback2 = null;
+			}
+			break;
+		}
+	}
 }
 
 // ---------------------------------------------------------------------------------------
@@ -103,12 +281,12 @@ CircleLib.prototype.textMenu = function(array)
 		str+=this.formatButton(array[1].icon,'circle1');
 		str+=this.formatButton(array[2].icon,'circle2');
 	} else if(array.length == 4) {
-		str+='<div style="position:absolute;top:0;left:0;width:100%;margin-top:-1.1em;">';
-		str+=this.formatButton(array[0].icon,'circle0');
-		str+=this.formatButton(array[1].icon,'circle1');
-		str+='</div><div style="position:absolute;top:0;left:0;width:100%;margin-top:1.1em;">';
+		str+='<div style="position:absolute;top:0;left:0;width:100%;margin-top:1.1em;">';
 		str+=this.formatButton(array[2].icon,'circle2');
 		str+=this.formatButton(array[3].icon,'circle3');
+		str+='</div><div style="position:absolute;top:0;left:0;width:100%;margin-top:-1.1em;">';
+		str+=this.formatButton(array[0].icon,'circle0');
+		str+=this.formatButton(array[1].icon,'circle1');
 		str+='</div>';
 	} else if(array.length == 5) {
 		str+='<div style="position:absolute;top:0;left:0;width:100%;margin-top:1.1em;">';
@@ -150,9 +328,6 @@ CircleLib.prototype.textMenu = function(array)
 	},function() {
 		for(var i=0;i<array.length;++i) {
 			document.getElementById('circle'+i).onclick=array[i].callback;
-//			document.getElementById('circle'+i).onclick=function() {
-//				console.log(this);
-//			};
 		}
 	});
 }
@@ -178,7 +353,6 @@ CircleLib.prototype.formatButton = function(icon,id)
 
 CircleLib.prototype.textSpinner = function(callback)
 {
-//	this.text('<i class="fa fa-spinner fa-spin" style="line-height:inherit;"></i>',2,callback);
 	this.text('<i class="fa fa-spinner fa-pulse" style="line-height:inherit;"></i>',2,callback);
 }
 
@@ -211,7 +385,17 @@ CircleLib.prototype.OnResize = function()
 	this.element.style.borderRadius = min+'px';
 	this.element.style.fontSize = fontSizeHeight+'px';
 
-	this.setGradient();
+	for( var i = 0; i < this.buttons.length; ++i) {
+		this.buttons[i].element.style.fontSize = fontSizeHeight+'px';
+	}
+
+	if( x > y) {
+		document.getElementById('volumePort').style.display = 'none';
+		document.getElementById('volumeLand').style.display = 'block';
+	} else {
+		document.getElementById('volumeLand').style.display = 'none';
+		document.getElementById('volumePort').style.display = 'block';
+	}
 }
 
 // ---------------------------------------------------------------------------------------
@@ -263,6 +447,7 @@ CircleLib.prototype.changeContentStep1 = function()
 {
 	var opacity = 1;
 	var element = this.element.firstChild;
+	var buttons = this.buttons;
 	var next = this.changeContentStep2;
 	var nextThis = this;
 
@@ -275,11 +460,26 @@ CircleLib.prototype.changeContentStep1 = function()
 		if(opacity <= 0.1) {
 			clearInterval(timer);
 			element.style.display = 'none';
+
+			for( var i = 0; i < buttons.length; ++i) {
+				if( !buttons[i].show) {
+					buttons[i].element.style.display = 'none';
+				}
+			}
+
 			next.call(nextThis);
 		}
 
 		element.style.opacity = opacity;
 		element.style.filter = 'alpha(opacity='+opacity*100+')';
+
+		for( var i = 0; i < buttons.length; ++i) {
+			if( !buttons[i].show && (buttons[i].element.style.display != 'none')) {
+				buttons[i].element.style.opacity = opacity;
+				buttons[i].element.style.filter = 'alpha(opacity='+opacity*100+')';
+			}
+		}
+
 		opacity-=opacity*0.3;
 	},50);
 }
@@ -301,10 +501,22 @@ CircleLib.prototype.changeContentStep3 = function()
 {
 	var opacity = 0.1;
 	var element = this.element.firstChild;
+	var buttons = this.buttons;
 	var next = this.changeContentStep4;
 	var nextThis = this;
 
 	element.style.display = 'block';
+
+	for( var i = 0; i < buttons.length; ++i) {
+		if( buttons[i].show) {
+			if( buttons[i].element.style.display != 'block') {
+				buttons[i].element.style.display = 'block';
+			} else {
+				buttons[i].show = false;
+			}
+		}
+	}
+
 	var timer = setInterval(function() {
 		if(opacity >= 1) {
 			clearInterval(timer);
@@ -313,6 +525,14 @@ CircleLib.prototype.changeContentStep3 = function()
 
 		element.style.opacity = opacity;
 		element.style.filter = 'alpha(opacity='+opacity*100+')';
+
+		for( var i = 0; i < buttons.length; ++i) {
+			if( buttons[i].show) {
+				buttons[i].element.style.opacity = opacity;
+				buttons[i].element.style.filter = 'alpha(opacity='+opacity*100+')';
+			}
+		}
+
 		opacity+=opacity*0.1;
 	},10);
 }
