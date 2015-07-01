@@ -92,6 +92,34 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
+	element.innerHTML = '<i class="fa fa-eject fa-fw"></i>';
+	element.style.bottom = '.4em';
+	element.style.right = '.4em';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'eject',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
+	element.innerHTML = '<i class="fa fa-arrow-up fa-fw"></i>';
+	element.style.top = '.4em';
+	element.style.right = '.4em';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'north',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
 	element.innerHTML = '<i class="fa fa-close fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
@@ -276,7 +304,10 @@ CircleLib.prototype.textMenu = function(array)
 	var fontSize = 1;
 	var str='';
 
-	if(array.length < 4) {
+	if(array.length < 3) {
+		str+=this.formatButton(array[0].icon,'circle0');
+		str+=this.formatButton(array[1].icon,'circle1');
+	} else if(array.length < 4) {
 		str+=this.formatButton(array[0].icon,'circle0');
 		str+=this.formatButton(array[1].icon,'circle1');
 		str+=this.formatButton(array[2].icon,'circle2');
@@ -480,7 +511,7 @@ CircleLib.prototype.changeContentStep1 = function()
 			}
 		}
 
-		opacity-=opacity*0.3;
+		opacity-=opacity*0.4;
 	},50);
 }
 
