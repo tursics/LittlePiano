@@ -122,11 +122,23 @@
 
 	function showMenuSoundFiles()
 	{
+		var menu=new Array(
+		{
+			icon:'smile-o',
+			callback:function() {}
+		},
+		{
+			icon:'smile-o',
+			callback:function() {}
+		}
+		);
+
 		circle.show('close',true,function() {
 			circle.show('close',false);
 			showMenuMain();
 		});
 		circle.text('No sound files found (to be done)',.5,function() {});
+//		circle.textMenu(menu);
 	}
 
 	function showMenuInfo()
@@ -149,31 +161,6 @@
 
 	function showMenuPlay()
 	{
-		var menu=new Array(
-		{
-			icon:'forward',
-			callback:function() {
-				// set music position
-			}
-		},
-		{
-			icon:'pause',
-			callback:function() {
-				// pause the music
-			}
-		},
-		{
-			icon:'eject',
-			callback:function() {
-				circle.show('volume',false);
-				circle.show('light',false);
-
-				mainSound.source.stop(0);
-				showMenuMain();
-			}
-		}
-		);
-
 		circle.show('volume',true,showMenuVolumeUp,showMenuVolumeDown);
 /*		circle.show('light',true,function() {
 			circle.show('volume',false);
@@ -181,8 +168,21 @@
 
 			showMenuLight( false);
 		});*/
+		circle.show('eject',true,function() {
+			circle.show('volume',false);
+			circle.show('light',false);
+			circle.show('eject',false);
+			circle.show('pause',false);
 
-		circle.textMenu( menu);
+			mainSound.source.stop(0);
+			showMenuMain();
+		});
+		circle.show('pause',true,function() {
+			// pause the music
+		});
+
+//		circle.image('assets/2001-1085.jpg',function() {});
+		circle.image('assets/2014-1328.jpg',function() {});
 	}
 
 	function showMenuScratch()

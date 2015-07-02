@@ -106,6 +106,20 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
+	element.innerHTML = '<i class="fa fa-pause fa-fw"></i>';
+	element.style.top = '.4em';
+	element.style.right = '.4em';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'pause',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
 	element.innerHTML = '<i class="fa fa-arrow-up fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
@@ -286,6 +300,40 @@ CircleLib.prototype.textNow = function(str,fontSize,hide)
 		this.element.innerHTML = '<div style="display:none;opacity:0;filter:alpha(opacity=100);">'+str+'</div>';
 	} else {
 		this.element.innerHTML = '<div>'+str+'</div>';
+	}
+	this.element.style.fontSize = fontSizeHeight+'px';
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.image = function(path,callback)
+{
+	this.changeContent( function() {
+		this.imageNow(path,true);
+	},callback);
+}
+
+// ---------------------------------------------------------------------------------------
+
+CircleLib.prototype.imageNow = function(path,hide)
+{
+	this.fontSize = 1;
+
+	var elementHeight = parseInt(this.element.style.height);
+	var fontSizeHeight = parseInt(elementHeight/10*this.fontSize);
+
+	if( undefined === hide) {
+		hide = false;
+	}
+
+	var image = 'background:url(\''+path+'\') no-repeat center center fixed;-webkit-background-size:contain;-moz-background-size:contain;-o-background-size:contain;background-size:contain;';
+	image += '-webkit-border-radius:5em;-moz-border-radius:5em;border-radius:5em;';
+	image += 'margin:1.15em;min-height:7.8em;';
+
+	if( hide) {
+		this.element.innerHTML = '<div style="display:none;opacity:0;filter:alpha(opacity=100);'+image+'"></div>';
+	} else {
+		this.element.innerHTML = '<div style="'+image+'"></div>';
 	}
 	this.element.style.fontSize = fontSizeHeight+'px';
 }
