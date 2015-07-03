@@ -115,12 +115,11 @@ MenuLib.prototype.showScratch = function(image)
 //		menu.showLight(image,true);
 //	});
 
-	if( menu.compass.isOk()) {
-		menu.circle.show('north',true,function() {
-			menu.compass.setNorth();
-//			menu.circle.textNow( menu.compass.gpsDiff, 1, false);
-		});
-	}
+//	if( menu.compass.isOk()) {
+//		menu.circle.show('north',true,function() {
+//			menu.compass.setNorth();
+//		});
+//	}
 
 	menu.circle.show('eject',true,function() {
 		menu.circle.show('volume',false);
