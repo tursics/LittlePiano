@@ -35,8 +35,8 @@ function CircleLib()
 CircleLib.prototype.create = function()
 {
 	var element = document.createElement('div');
-	element.innerHTML = '<div id="volumePort"><i id="volumeDown1" class="fa fa-volume-down fa-fw"></i><span style="padding:.3em 0;margin:0 .1em;border:solid .06em rgba(255,255,255,0.6);"></span><i id="volumeUp1" class="fa fa-volume-up fa-fw"></i></div>';
-	element.innerHTML += '<div id="volumeLand"><i id="volumeUp2" class="fa fa-volume-up fa-fw"></i><hr style="margin:.1em -.2em;border:solid .06em rgba(255,255,255,0.6);"><i id="volumeDown2" class="fa fa-volume-down fa-fw"></i></div>';
+	element.innerHTML = '<div id="volumePort"><i id="volumeDown1" class="icon-volume-down fa-fw"></i><span style="padding:.3em 0;margin:0 .1em;border:solid .06em rgba(255,255,255,0.6);"></span><i id="volumeUp1" class="icon-volume-up fa-fw"></i></div>';
+	element.innerHTML += '<div id="volumeLand"><i id="volumeUp2" class="icon-volume-up fa-fw"></i><hr style="margin:.1em -.2em;border:solid .06em rgba(255,255,255,0.6);"><i id="volumeDown2" class="icon-volume-down fa-fw"></i></div>';
 	element.style.bottom = '.4em';
 	element.style.left = '.4em';
 	document.body.appendChild(element);
@@ -50,7 +50,7 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
-	element.innerHTML = '<i class="fa fa-info fa-fw"></i>';
+	element.innerHTML = '<i class="icon-info fa-fw"></i>';
 	element.style.bottom = '.4em';
 	element.style.left = '.4em';
 	document.body.appendChild(element);
@@ -64,7 +64,7 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
-	element.innerHTML = '<i class="fa fa-question fa-fw"></i>'; // icon: a winder
+	element.innerHTML = '<i class="icon-help fa-fw"></i>'; // icon: a winder
 	element.style.bottom = '.4em';
 	element.style.right = '.4em';
 	document.body.appendChild(element);
@@ -78,7 +78,7 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
-	element.innerHTML = '<i class="fa fa-lightbulb-o fa-fw"></i>';
+	element.innerHTML = '<i class="icon-hue fa-fw"></i>';
 	element.style.bottom = '.4em';
 	element.style.right = '.4em';
 	document.body.appendChild(element);
@@ -92,7 +92,7 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
-	element.innerHTML = '<i class="fa fa-eject fa-fw"></i>';
+	element.innerHTML = '<i class="icon-eject fa-fw"></i>';
 	element.style.bottom = '.4em';
 	element.style.right = '.4em';
 	document.body.appendChild(element);
@@ -106,7 +106,7 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
-	element.innerHTML = '<i class="fa fa-pause fa-fw"></i>';
+	element.innerHTML = '<i class="icon-pause fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
 	document.body.appendChild(element);
@@ -120,7 +120,7 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
-	element.innerHTML = '<i class="fa fa-arrow-up fa-fw"></i>';
+	element.innerHTML = '<i class="icon-up fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
 	document.body.appendChild(element);
@@ -134,7 +134,7 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
-	element.innerHTML = '<i class="fa fa-close fa-fw"></i>';
+	element.innerHTML = '<i class="icon-cancel fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
 	document.body.appendChild(element);
@@ -342,7 +342,7 @@ CircleLib.prototype.imageNow = function(path,hide)
 
 CircleLib.prototype.textIcon = function(icon,callback)
 {
-	this.text('<i class="fa fa-'+icon+'" style="line-height:inherit;"></i>',2,callback);
+	this.text('<i class="icon-'+icon+'" style="line-height:inherit;"></i>',2,callback);
 }
 
 // ---------------------------------------------------------------------------------------
@@ -425,14 +425,14 @@ CircleLib.prototype.formatButton = function(icon,id)
 	+'padding:.3em .2em;'
 	+'border:solid .1em rgba(255,255,255,0.5);'
 	+'margin:.2em;'
-	+'" id='+id+'><i class="fa fa-'+icon+' fa-fw" style="line-height:inherit;"></i></div>';
+	+'" id='+id+'><i class="icon-'+icon+' fa-fw" style="line-height:inherit;"></i></div>';
 }
 
 // ---------------------------------------------------------------------------------------
 
 CircleLib.prototype.textSpinner = function(callback)
 {
-	this.text('<i class="fa fa-spinner fa-pulse" style="line-height:inherit;"></i>',2,callback);
+	this.text('<i class="icon-spinner fa-pulse" style="line-height:inherit;"></i>',2,callback);
 }
 
 // ---------------------------------------------------------------------------------------
