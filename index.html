@@ -9,6 +9,7 @@
 	<script type="text/javascript" charset="utf-8" src="scripts/backgroundLib.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/circleLib.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/compassLib.js"></script>
+	<script type="text/javascript" charset="utf-8" src="scripts/menuLib.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/NoSleep-0.5.0.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="scripts/soundLib.js"></script>
 </head>
@@ -19,8 +20,8 @@
 	var background = null;
 	var circle = null;
 	var compass = null;
+	var menu = null;
 	var sound = null;
-	var mainSound = null;
 
 	function init()
 	{
@@ -33,6 +34,7 @@
 		circle = new CircleLib('circle');
 		compass = new CompassLib();
 		sound = new SoundLib();
+		menu = new MenuLib(circle,compass,sound);
 
 		if( sound.isOk()) {
 			circle.text( 'Little Piano', 1, function() {
@@ -56,248 +58,9 @@
 //				'assets/pizzzzzzzz.mp3',
 				'assets/interlude.mp3',
 			], function() {
-				showMenuMain();
+				menu.showMain();
 			});
 		});
-	}
-
-	function showMenuMain()
-	{
-		var menu=new Array(
-		{
-			icon:'play',
-			callback:function() {
-				circle.show('info',false);
-				circle.show('help',false);
-
-				playMusic(sound,false);
-			}
-		},
-		{
-			icon:'rotate',
-			callback:function() {
-				circle.show('info',false);
-				circle.show('help',false);
-
-				compass.setNorth();
-				playMusic(sound,true);
-			}
-		},
-		{
-			icon:'music',
-			callback:function() {
-				circle.show('info',false);
-				circle.show('help',false);
-
-				showMenuSoundFiles();
-			}
-		}
-		);
-
-		circle.show('info',true,function() {
-			circle.show('info',false);
-			circle.show('help',false);
-
-			showMenuInfo();
-		});
-		circle.show('help',true,function() {
-			circle.show('info',false);
-			circle.show('help',false);
-
-			showMenuHelp();
-		});
-
-		circle.textMenu(menu);
-	}
-
-	function showMenuSoundFiles()
-	{
-		var menu=new Array(
-		{
-			icon:'smile-o',
-			callback:function() {}
-		},
-		{
-			icon:'smile-o',
-			callback:function() {}
-		}
-		);
-
-		circle.show('close',true,function() {
-			circle.show('close',false);
-			showMenuMain();
-		});
-		circle.text('No sound files found (to be done)',.5,function() {});
-//		circle.textMenu(menu);
-	}
-
-	function showMenuInfo()
-	{
-		circle.show('close',true,function() {
-			circle.show('close',false);
-			showMenuMain();
-		});
-		circle.text('Some infos about "Little Piano"...',.5,function() {});
-	}
-
-	function showMenuHelp()
-	{
-		circle.show('close',true,function() {
-			circle.show('close',false);
-			showMenuMain();
-		});
-		circle.text('Rotate your device to change the speed of the music',.3,function() {});
-	}
-
-	function showMenuPlay()
-	{
-		circle.show('volume',true,showMenuVolumeUp,showMenuVolumeDown);
-/*		circle.show('light',true,function() {
-			circle.show('volume',false);
-			circle.show('light',false);
-
-			showMenuLight( false);
-		});*/
-		circle.show('eject',true,function() {
-			circle.show('volume',false);
-			circle.show('light',false);
-			circle.show('eject',false);
-			circle.show('pause',false);
-
-			mainSound.source.stop(0);
-			showMenuMain();
-		});
-		circle.show('pause',true,function() {
-			// pause the music
-		});
-
-//		circle.image('assets/2001-1085.jpg',function() {});
-		circle.image('assets/2014-1328.jpg',function() {});
-	}
-
-	function showMenuScratch()
-	{
-		circle.show('volume',true,showMenuVolumeUp,showMenuVolumeDown);
-/*		circle.show('light',true,function() {
-			circle.show('volume',false);
-			circle.show('light',false);
-
-			showMenuLight( true);
-		});*/
-		circle.show('north',true,function() {
-			compass.setNorth();
-//			circle.textNow( compass.gpsDiff, 1, false);
-		});
-		circle.show('eject',true,function() {
-			circle.show('volume',false);
-			circle.show('light',false);
-			circle.show('north',false);
-			circle.show('eject',false);
-
-			compass.resetNorth();
-			mainSound.source.stop(0);
-			compass.unwatch();
-			showMenuMain();
-		});
-
-		circle.text('Rotate your device',.8,function() {});
-	}
-
-	function showMenuVolumeUp()
-	{
-		var volume = sound.getVolume(mainSound);
-
-		if( volume < .9) {
-			volume += .1;
-		} else {
-			volume = 1;
-		}
-		sound.setVolume(mainSound,volume);
-	}
-
-	function showMenuVolumeDown()
-	{
-		var volume = sound.getVolume(mainSound);
-
-		if( volume > .1) {
-			volume -= .1;
-		} else {
-			volume = 0;
-		}
-		sound.setVolume(mainSound,volume);
-	}
-
-	function showMenuLight(scratch)
-	{
-		circle.show('close',true,function() {
-			circle.show('close',false);
-
-			if( scratch) {
-				showMenuScratch();
-			} else {
-				showMenuPlay();
-			}
-		});
-		circle.text('No Philips Hue found (to be done)',.5,function() {});
-	}
-
-	function playMusic(sound,scratch)
-	{
-		mainSound = sound.play(0);
-		mainSound.source.loop = true;
-
-		if(scratch) {
-			if( compass.isOk()) {
-				compass.watch( function( degrees) {
-					circle.rotate( -degrees);
-				});
-
-				var slots = [0,0,0,0,0,0,0,0,0,0];
-				var timer = setInterval( function() {
-					speedTimer()
-				}, 100);
-
-				var lastDegree = compass.gpsDegree;
-				function speedTimer() {
-					var diff = lastDegree - compass.gpsDegree;
-					if( diff > 90) {
-						diff -= 360;
-					} else if( diff < -90) {
-						diff += 360;
-					}
-					lastDegree = compass.gpsDegree;
-
-					var sum = 0;
-					for( var i = 1; i < slots.length; ++i) {
-						slots[i-1] = slots[i];
-						sum += slots[i];
-					}
-					slots[slots.length-1] = diff;
-					sum += diff;
-
-					var speed = sum / slots.length / 10;
-					if( speed < 0) {
-						sound.setSpeed(mainSound, 0);
-//						circle.textNow( speed, 1);
-					} else if( speed < 0.8) {
-						sound.setSpeed(mainSound, speed);
-//						circle.textNow( speed, 1);
-					} else if( speed > 1.2) {
-						sound.setSpeed(mainSound, speed);
-//						circle.textNow( speed, 1);
-					} else {
-						sound.setSpeed(mainSound, 1);
-//						circle.textNow( speed, 1);
-					}
-
-				}
-
-				showMenuScratch();
-			}
-		} else {
-			sound.setSpeed(mainSound,1);
-			showMenuPlay();
-		}
 	}
 
 	function preventOverscroll()
