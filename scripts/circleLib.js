@@ -79,8 +79,8 @@ CircleLib.prototype.create = function()
 
 	element = document.createElement('div');
 	element.innerHTML = '<i class="icon-hue fa-fw"></i>';
-	element.style.bottom = '.4em';
-	element.style.right = '.4em';
+	element.style.top = '.4em';
+	element.style.left = '.4em';
 	document.body.appendChild(element);
 
 	this.buttons.push({
