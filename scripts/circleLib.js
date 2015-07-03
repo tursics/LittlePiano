@@ -64,7 +64,7 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
-	element.innerHTML = '<i class="icon-help fa-fw"></i>'; // icon: a winder
+	element.innerHTML = '<i class="icon-help fa-fw"></i>';
 	element.style.bottom = '.4em';
 	element.style.right = '.4em';
 	document.body.appendChild(element);
@@ -353,50 +353,50 @@ CircleLib.prototype.textMenu = function(array)
 	var str='';
 
 	if(array.length < 3) {
-		str+=this.formatButton(array[0].icon,'circle0');
-		str+=this.formatButton(array[1].icon,'circle1');
+		str+=this.formatButton(array[0].icon,array[0].image,'circle0');
+		str+=this.formatButton(array[1].icon,array[1].image,'circle1');
 	} else if(array.length < 4) {
-		str+=this.formatButton(array[0].icon,'circle0');
-		str+=this.formatButton(array[1].icon,'circle1');
-		str+=this.formatButton(array[2].icon,'circle2');
+		str+=this.formatButton(array[0].icon,array[0].image,'circle0');
+		str+=this.formatButton(array[1].icon,array[1].image,'circle1');
+		str+=this.formatButton(array[2].icon,array[2].image,'circle2');
 	} else if(array.length == 4) {
 		str+='<div style="position:absolute;top:0;left:0;width:100%;margin-top:1.1em;">';
-		str+=this.formatButton(array[2].icon,'circle2');
-		str+=this.formatButton(array[3].icon,'circle3');
+		str+=this.formatButton(array[2].icon,array[2].image,'circle2');
+		str+=this.formatButton(array[3].icon,array[3].image,'circle3');
 		str+='</div><div style="position:absolute;top:0;left:0;width:100%;margin-top:-1.1em;">';
-		str+=this.formatButton(array[0].icon,'circle0');
-		str+=this.formatButton(array[1].icon,'circle1');
+		str+=this.formatButton(array[0].icon,array[0].image,'circle0');
+		str+=this.formatButton(array[1].icon,array[1].image,'circle1');
 		str+='</div>';
 	} else if(array.length == 5) {
 		str+='<div style="position:absolute;top:0;left:0;width:100%;margin-top:1.1em;">';
-		str+=this.formatButton(array[2].icon,'circle2');
-		str+=this.formatButton(array[3].icon,'circle3');
-		str+=this.formatButton(array[4].icon,'circle4');
+		str+=this.formatButton(array[2].icon,array[2].image,'circle2');
+		str+=this.formatButton(array[3].icon,array[3].image,'circle3');
+		str+=this.formatButton(array[4].icon,array[4].image,'circle4');
 		str+='</div><div style="position:absolute;top:0;left:0;width:100%;margin-top:-1.1em;">';
-		str+=this.formatButton(array[0].icon,'circle0');
-		str+=this.formatButton(array[1].icon,'circle1');
+		str+=this.formatButton(array[0].icon,array[0].image,'circle0');
+		str+=this.formatButton(array[1].icon,array[1].image,'circle1');
 		str+='</div>';
 	} else if(array.length == 6) {
 		str+='<div style="position:absolute;top:0;left:0;width:100%;margin-top:-1.1em;">';
-		str+=this.formatButton(array[0].icon,'circle0');
-		str+=this.formatButton(array[1].icon,'circle1');
-		str+=this.formatButton(array[2].icon,'circle2');
+		str+=this.formatButton(array[0].icon,array[0].image,'circle0');
+		str+=this.formatButton(array[1].icon,array[1].image,'circle1');
+		str+=this.formatButton(array[2].icon,array[2].image,'circle2');
 		str+='</div><div style="position:absolute;top:0;left:0;width:100%;margin-top:1.1em;">';
-		str+=this.formatButton(array[3].icon,'circle3');
-		str+=this.formatButton(array[4].icon,'circle4');
-		str+=this.formatButton(array[5].icon,'circle5');
+		str+=this.formatButton(array[3].icon,array[3].image,'circle3');
+		str+=this.formatButton(array[4].icon,array[4].image,'circle4');
+		str+=this.formatButton(array[5].icon,array[5].image,'circle5');
 		str+='</div>';
 	} else {
 		str+='<div style="position:absolute;top:0;left:0;width:100%;margin-top:-2.2em;">';
-		str+=this.formatButton(array[0].icon,'circle0');
-		str+=this.formatButton(array[1].icon,'circle1');
+		str+=this.formatButton(array[0].icon,array[0].image,'circle0');
+		str+=this.formatButton(array[1].icon,array[1].image,'circle1');
 		str+='</div><div style="position:absolute;top:0;left:0;width:100%;margin-top:0;">';
-		str+=this.formatButton(array[2].icon,'circle2');
-		str+=this.formatButton(array[3].icon,'circle3');
-		str+=this.formatButton(array[4].icon,'circle4');
+		str+=this.formatButton(array[2].icon,array[2].image,'circle2');
+		str+=this.formatButton(array[3].icon,array[3].image,'circle3');
+		str+=this.formatButton(array[4].icon,array[4].image,'circle4');
 		str+='</div><div style="position:absolute;top:0;left:0;width:100%;margin-top:2.2em;">';
-		str+=this.formatButton(array[5].icon,'circle5');
-		str+=this.formatButton(array[6].icon,'circle6');
+		str+=this.formatButton(array[5].icon,array[5].image,'circle5');
+		str+=this.formatButton(array[6].icon,array[6].image,'circle6');
 		str+='</div>';
 	}
 
@@ -413,9 +413,23 @@ CircleLib.prototype.textMenu = function(array)
 
 // ---------------------------------------------------------------------------------------
 
-CircleLib.prototype.formatButton = function(icon,id)
+CircleLib.prototype.formatButton = function(icon,image,id)
 {
 	var fontSize = .8;
+	var div = '';
+
+	if( undefined === icon) {
+		div = '<img src="'+image+'" style="'
+		+'-webkit-border-radius:3em;'
+		+'-moz-border-radius:3em;'
+		+'border-radius:3em;'
+		+'width:1.9em;height:1.9em;'
+		+'margin:0 -.3em -.65em -.3em;'
+		+'">';
+	} else {
+		div = '<i class="icon-'+icon+' fa-fw" style="line-height:inherit;"></i>';
+	}
+
 	return '<div style="'
 	+'display:inline;'
 	+'background:rgba(255,255,255,.2);'
@@ -425,7 +439,7 @@ CircleLib.prototype.formatButton = function(icon,id)
 	+'padding:.3em .2em;'
 	+'border:solid .1em rgba(255,255,255,0.5);'
 	+'margin:.2em;'
-	+'" id='+id+'><i class="icon-'+icon+' fa-fw" style="line-height:inherit;"></i></div>';
+	+'" id='+id+'>'+div+'</div>';
 }
 
 // ---------------------------------------------------------------------------------------

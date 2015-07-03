@@ -32,12 +32,7 @@ MenuLib.prototype.showMain = function()
 			menu.circle.show('info',false);
 			menu.circle.show('help',false);
 
-			menu.mainSound = menu.sound.play(0);
-			menu.mainSound.source.loop = true;
-
-			menu.sound.setSpeed(menu.mainSound,1);
-
-			menu.showPlay();
+			menu.showSoundFiles(false);
 		}
 	},
 	{
@@ -46,22 +41,7 @@ MenuLib.prototype.showMain = function()
 			menu.circle.show('info',false);
 			menu.circle.show('help',false);
 
-			menu.mainSound = menu.sound.play(0);
-			menu.mainSound.source.loop = true;
-
-			menu.sound.setSpeed(menu.mainSound,0);
-
-			menu.initScratch();
-			menu.showScratch();
-		}
-	},
-	{
-		icon:'music',
-		callback:function() {
-			menu.circle.show('info',false);
-			menu.circle.show('help',false);
-
-			menu.showSoundFiles();
+			menu.showSoundFiles(true);
 		}
 	});
 
@@ -166,18 +146,56 @@ MenuLib.prototype.showScratch = function()
 
 // ---------------------------------------------------------------------------------------
 
-MenuLib.prototype.showSoundFiles = function()
+MenuLib.prototype.showSoundFiles = function(scratch)
 {
 	var menu = this;
 
+	function playAsset() {
+		menu.circle.show('close',false);
+
+		menu.mainSound = menu.sound.play(0);
+		menu.mainSound.source.loop = true;
+
+		if(scratch) {
+			menu.sound.setSpeed(menu.mainSound,0);
+
+			menu.initScratch();
+			menu.showScratch();
+		} else {
+			menu.sound.setSpeed(menu.mainSound,1);
+
+			menu.showPlay();
+		}
+	}
+
 	var menuArray=new Array(
 	{
-		icon:'smile-o',
-		callback:function() {}
+		image:'assets/2001-1085.jpg',
+		callback:playAsset
 	},
 	{
-		icon:'smile-o',
-		callback:function() {}
+		image:'assets/2001-843.jpg',
+		callback:playAsset
+	},
+	{
+		image:'assets/2004-396.jpg',
+		callback:playAsset
+	},
+	{
+		image:'assets/2006-488.jpg',
+		callback:playAsset
+	},
+	{
+		image:'assets/2006-489.jpg',
+		callback:playAsset
+	},
+	{
+		image:'assets/2006-506.jpg',
+		callback:playAsset
+	},
+	{
+		image:'assets/2014-1328.jpg',
+		callback:playAsset
 	}
 	);
 
@@ -186,9 +204,7 @@ MenuLib.prototype.showSoundFiles = function()
 		menu.showMain();
 	});
 
-	menu.circle.text('No sound files found (to be done)',.5,function() {
-	});
-//	menu.circle.textMenu(menuArray);
+	menu.circle.textMenu(menuArray);
 }
 
 // ---------------------------------------------------------------------------------------
