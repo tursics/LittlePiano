@@ -11,6 +11,7 @@ function CircleLib()
 
 	try {
 		this.element = document.createElement('div');
+		this.element.style.overflow = 'hidden';
 		document.body.appendChild(this.element);
 
 		var circle = this;
@@ -39,6 +40,7 @@ CircleLib.prototype.create = function()
 	element.innerHTML += '<div id="volumeLand"><i id="volumeUp2" class="icon-volume-up fa-fw"></i><hr style="margin:.1em -.2em;border:solid .06em rgba(255,255,255,0.6);"><i id="volumeDown2" class="icon-volume-down fa-fw"></i></div>';
 	element.style.bottom = '.4em';
 	element.style.left = '.4em';
+	element.style.overflow = 'hidden';
 	document.body.appendChild(element);
 
 	this.buttons.push({
@@ -53,6 +55,7 @@ CircleLib.prototype.create = function()
 	element.innerHTML = '<i class="icon-info fa-fw"></i>';
 	element.style.bottom = '.4em';
 	element.style.left = '.4em';
+	element.style.overflow = 'hidden';
 	document.body.appendChild(element);
 
 	this.buttons.push({
@@ -67,6 +70,7 @@ CircleLib.prototype.create = function()
 	element.innerHTML = '<i class="icon-help fa-fw"></i>';
 	element.style.bottom = '.4em';
 	element.style.right = '.4em';
+	element.style.overflow = 'hidden';
 	document.body.appendChild(element);
 
 	this.buttons.push({
@@ -81,6 +85,7 @@ CircleLib.prototype.create = function()
 	element.innerHTML = '<i class="icon-hue fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.left = '.4em';
+	element.style.overflow = 'hidden';
 	document.body.appendChild(element);
 
 	this.buttons.push({
@@ -95,6 +100,7 @@ CircleLib.prototype.create = function()
 	element.innerHTML = '<i class="icon-eject fa-fw"></i>';
 	element.style.bottom = '.4em';
 	element.style.right = '.4em';
+	element.style.overflow = 'hidden';
 	document.body.appendChild(element);
 
 	this.buttons.push({
@@ -109,6 +115,7 @@ CircleLib.prototype.create = function()
 	element.innerHTML = '<i class="icon-pause fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
+	element.style.overflow = 'hidden';
 	document.body.appendChild(element);
 
 	this.buttons.push({
@@ -123,6 +130,7 @@ CircleLib.prototype.create = function()
 	element.innerHTML = '<i class="icon-up fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
+	element.style.overflow = 'hidden';
 	document.body.appendChild(element);
 
 	this.buttons.push({
@@ -137,6 +145,7 @@ CircleLib.prototype.create = function()
 	element.innerHTML = '<i class="icon-cancel fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
+	element.style.overflow = 'hidden';
 	document.body.appendChild(element);
 
 	this.buttons.push({
