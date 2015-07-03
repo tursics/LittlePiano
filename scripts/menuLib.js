@@ -64,7 +64,7 @@ MenuLib.prototype.showMain = function()
 
 // ---------------------------------------------------------------------------------------
 
-MenuLib.prototype.showPlay = function()
+MenuLib.prototype.showPlay = function(image)
 {
 	var menu = this;
 
@@ -76,7 +76,7 @@ MenuLib.prototype.showPlay = function()
 //		menu.circle.show('eject',false);
 //		menu.circle.show('pause',false);
 //
-//		menu.showLight(false);
+//		menu.showLight(image,false);
 //	});
 
 	menu.circle.show('eject',true,function() {
@@ -94,15 +94,13 @@ MenuLib.prototype.showPlay = function()
 		// to do: pause the music
 	});
 
-//	menu.circle.image('assets/2001-1085.jpg',function() {
-//	});
-	menu.circle.image('assets/2014-1328.jpg',function() {
+	menu.circle.image(image,function() {
 	});
 }
 
 // ---------------------------------------------------------------------------------------
 
-MenuLib.prototype.showScratch = function()
+MenuLib.prototype.showScratch = function(image)
 {
 	var menu = this;
 
@@ -114,7 +112,7 @@ MenuLib.prototype.showScratch = function()
 //		menu.circle.show('north',false);
 //		menu.circle.show('eject',false);
 //
-//		menu.showLight( true);
+//		menu.showLight(image,true);
 //	});
 
 	if( menu.compass.isOk()) {
@@ -140,7 +138,9 @@ MenuLib.prototype.showScratch = function()
 		menu.showMain();
 	});
 
-	menu.circle.text('Rotate your device',.8,function() {
+//	menu.circle.text('Rotate your device',.8,function() {
+//	});
+	menu.circle.image(image,function() {
 	});
 }
 
@@ -151,6 +151,8 @@ MenuLib.prototype.showSoundFiles = function(scratch)
 	var menu = this;
 
 	function playAsset() {
+		var image=this.children[0].src;
+
 		menu.circle.show('close',false);
 
 		menu.mainSound = menu.sound.play(0);
@@ -160,11 +162,11 @@ MenuLib.prototype.showSoundFiles = function(scratch)
 			menu.sound.setSpeed(menu.mainSound,0);
 
 			menu.initScratch();
-			menu.showScratch();
+			menu.showScratch(image);
 		} else {
 			menu.sound.setSpeed(menu.mainSound,1);
 
-			menu.showPlay();
+			menu.showPlay(image);
 		}
 	}
 
@@ -237,7 +239,7 @@ MenuLib.prototype.showHelp = function()
 
 // ---------------------------------------------------------------------------------------
 
-MenuLib.prototype.showLight = function(scratch)
+MenuLib.prototype.showLight = function(image,scratch)
 {
 	var menu = this;
 
@@ -245,9 +247,9 @@ MenuLib.prototype.showLight = function(scratch)
 		menu.circle.show('close',false);
 
 		if( scratch) {
-			menu.showScratch();
+			menu.showScratch(image);
 		} else {
-			menu.showPlay();
+			menu.showPlay(image);
 		}
 	});
 
