@@ -240,6 +240,30 @@ SoundLib.prototype.getCurrentTime = function()
 
 // ---------------------------------------------------------------------------------------
 
+SoundLib.prototype.setCurrentTime = function(timestamp)
+{
+	if( !this.isOk()) {
+		console.error('SoundLib not ready');
+		return 0;
+	}
+
+	this.context.currentTime = timestamp;
+}
+
+// ---------------------------------------------------------------------------------------
+
+SoundLib.prototype.getDuration = function(asset)
+{
+	if( !this.isOk()) {
+		console.error('SoundLib not ready');
+		return 0;
+	}
+
+	return asset.source.buffer.duration;
+}
+
+// ---------------------------------------------------------------------------------------
+
 SoundLib.prototype.loadAssetAudioAPI = function(url, index)
 {
 	var loader = this;

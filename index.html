@@ -34,7 +34,7 @@
 		circle = new CircleLib('circle');
 		compass = new CompassLib();
 		sound = new SoundLib();
-		menu = new MenuLib(circle,compass,sound);
+		menu = new MenuLib(background,circle,compass,sound);
 
 		if( sound.isOk()) {
 			circle.text( 'Little Piano', 1, function() {
@@ -51,12 +51,8 @@
 	{
 		circle.textSpinner( function() {
 			sound.loadAssets([
-				// convert youtube to mp3: http://www.youtube-mp3.org/de
-//				'assets/berlinerluft.mp3', // http://www.youtube.com/watch?v=KMU0tzLwhbE
-//				'assets/9000g.wav',        // file://wxWidgets/samples/sound
-//				'assets/stephan.mp3',
-//				'assets/pizzzzzzzz.mp3',
-				'assets/interlude.mp3',
+				'assets/2014-1328.mp3',
+				'assets/2014-1328r.mp3',
 			], function() {
 				menu.showMain();
 			});

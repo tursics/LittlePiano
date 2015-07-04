@@ -7,8 +7,14 @@
 
 // ---------------------------------------------------------------------------------------
 
-function MenuLib(circle,compass,sound)
+function MenuLib(background,circle,compass,sound)
 {
+	this.thresholdMin = 1;
+	this.thresholdMax = 1.4;
+	this.thresholdScratchMin = 10;
+	this.thresholdScratchMax = 50;
+
+	this.background = background;
 	this.circle = circle;
 	this.compass = compass;
 	this.sound = sound;
@@ -133,6 +139,8 @@ MenuLib.prototype.showScratch = function(image)
 			menu.compass.resetNorth();
 			menu.compass.unwatch();
 		}
+
+		menu.background.setTheme(menu.background.RED);
 
 		menu.showMain();
 	});
@@ -303,6 +311,8 @@ MenuLib.prototype.initScratch = function()
 
 	var slots = [0,0,0,0,0,0,0,0,0,0];
 	var lastDegree = menu.compass.gpsDegree;
+	var perfectSpeed = false;
+	var direction = 1;
 	var timer = setInterval( function() {
 		speedTimer();
 	}, 100);
@@ -324,21 +334,75 @@ MenuLib.prototype.initScratch = function()
 		slots[slots.length-1] = diff;
 		sum += diff;
 
-		var speed = sum / slots.length / 10;
-		if( speed < 0) {
-			menu.sound.setSpeed(menu.mainSound,0);
-//			menu.circle.textNow(speed,1);
-		} else if( speed < 0.8) {
-			menu.sound.setSpeed(menu.mainSound,speed);
-//			menu.circle.textNow(speed,1);
-		} else if( speed > 1.2) {
-			menu.sound.setSpeed(menu.mainSound,speed);
-//			menu.circle.textNow(speed,1);
-		} else {
-			menu.sound.setSpeed(menu.mainSound,1);
-//			menu.circle.textNow(speed,1);
+		var scratch = false;
+		var i = slots.length - 1;
+		if(( slots[i-0] >  menu.thresholdScratchMin) && (slots[i-0] <  menu.thresholdScratchMax) &&
+		    (slots[i-1] < -menu.thresholdScratchMin) && (slots[i-1] > -menu.thresholdScratchMax) &&
+		    (slots[i-2] >  menu.thresholdScratchMin) && (slots[i-2] <  menu.thresholdScratchMax))
+		{
+			scratch = true;
+		} else if(( slots[i-0] < -menu.thresholdScratchMin) && (slots[i-0] > -menu.thresholdScratchMax) &&
+		           (slots[i-1] >  menu.thresholdScratchMin) && (slots[i-1] <  menu.thresholdScratchMax) &&
+		           (slots[i-2] < -menu.thresholdScratchMin) && (slots[i-2] > -menu.thresholdScratchMax))
+		{
+			scratch = true;
 		}
 
+		var speed = sum / slots.length / 10;
+		var goodSpeed = false;
+		var currentDirection = speed < 0 ? -1 : 1;
+
+		if(scratch) {
+			if(( direction == -1) || (direction == 1)) {
+				menu.background.setTheme(menu.background.ORANGE);
+
+				if(direction == -1) {
+					menu.mainSound.source.stop(0);
+					menu.mainSound = menu.sound.play(0);
+					menu.mainSound.source.loop = true;
+				}
+			}
+			if( direction > 0) {
+				direction = -2;
+				menu.sound.setSpeed(menu.mainSound,.8);
+			} else {
+				direction = 2;
+				menu.sound.setSpeed(menu.mainSound,3);
+			}
+
+			return;
+		} else if(( direction < -1) || (direction > 1)) {
+			menu.background.setTheme(menu.background.RED);
+			direction = !currentDirection;
+		}
+
+		if( direction != currentDirection) {
+			direction = currentDirection;
+//			var timestamp = menu.sound.getCurrentTime();
+//			timestamp = menu.sound.getDuration(menu.mainSound) - timestamp;
+
+			menu.mainSound.source.stop(0);
+			menu.mainSound = menu.sound.play(direction<0 ? 1 : 0);
+			menu.mainSound.source.loop = true;
+//			menu.sound.setValueAtTime(timestamp,menu.sound.setCurrentTime());
+		}
+
+		if( speed < 0) {
+			speed = -speed;
+		}
+		if( speed < menu.thresholdMin) {
+			menu.sound.setSpeed(menu.mainSound,speed / menu.thresholdMin);
+		} else if( speed > menu.thresholdMax) {
+			menu.sound.setSpeed(menu.mainSound,speed / menu.thresholdMax);
+		} else {
+			menu.sound.setSpeed(menu.mainSound,1);
+			goodSpeed = true;
+		}
+
+		if( perfectSpeed != goodSpeed) {
+			perfectSpeed = goodSpeed;
+			menu.background.setTheme(perfectSpeed?menu.background.GREEN:menu.background.RED);
+		}
 	}
 }
 
