@@ -6,6 +6,13 @@ function BackgroundLib()
 {
 	this.element = null;
 
+	this.RED = 0;
+	this.YELLOW = 1;
+	this.GREEN = 2;
+	this.CYAN = 3;
+	this.ORANGE = 4;
+	this.ORANGE2 = 5;
+
 	try {
 		this.element = document.getElementsByTagName('body')[0];
 
@@ -29,13 +36,26 @@ BackgroundLib.prototype.init = function()
 	this.element.style.fontFamily = 'inglobal';
 	this.element.style.overflow = 'hidden';
 
-	this.setGradient('#204490','#d0367f');
-	// 1: 204490 d0367f
-	// 2: cc3c82 fac209
-	// 3: ffc805 31ab34
-	// 4: 26a939 017ebe
-	// 5: 0d7ab3 ee4e1e
-	// 6: ee491c e38b06
+	this.setTheme(this.RED);
+}
+
+// ---------------------------------------------------------------------------------------
+
+BackgroundLib.prototype.setTheme = function(theme)
+{
+	if(this.YELLOW==theme) {
+		this.setGradient('#cc3c82','#fac209');
+	} else if(this.GREEN==theme) {
+		this.setGradient('#ffc805','#31ab34');
+	} else if(this.CYAN==theme) {
+		this.setGradient('#26a939','#017ebe');
+	} else if(this.ORANGE==theme) {
+		this.setGradient('#0d7ab3','#ee4e1e');
+	} else if(this.CYAN==theme) {
+		this.setGradient('#ee491c','#e38b06');
+	} else {
+		this.setGradient('#204490','#d0367f');
+	}
 	// 7: eb9105 ffc702
 	// 8: ffcc00 089edd
 	// 9: 00a1e5 302b7d
