@@ -93,6 +93,7 @@ CompassLib.prototype.watch = function( callback)
 
 	if( this.PHONEGAP == this.support) {
 		this.watcher = navigator.compass.watchHeading( function( degrees) {
+			degrees += watch.gpsDiff;
 			if( watch.gpsDegree != degrees) {
 				watch.gpsDegree = degrees;
 				callback( parseInt( watch.gpsDegree));
@@ -100,7 +101,7 @@ CompassLib.prototype.watch = function( callback)
 		});
 	} else if( this.WEBKITCOMPASS == this.support) {
 		this.watcher = function( event) {
-			var degrees = event.webkitCompassHeading;
+			var degrees = event.webkitCompassHeading + watch.gpsDiff;
 
 			if( watch.gpsDegree != degrees) {
 				watch.gpsDegree = degrees;

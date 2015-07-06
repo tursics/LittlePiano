@@ -11,7 +11,7 @@ function MenuLib(background,circle,compass,sound)
 {
 	this.thresholdMin = 1;
 	this.thresholdMax = 1.4;
-	this.thresholdScratchMin = 10;
+	this.thresholdScratchMin = 5;
 	this.thresholdScratchMax = 50;
 
 	this.background = background;
@@ -238,10 +238,36 @@ MenuLib.prototype.showHelp = function()
 
 	menu.circle.show('close',true,function() {
 		menu.circle.show('close',false);
+		menu.circle.show('next',false);
 		menu.showMain();
 	});
+	menu.circle.show('next',true,function() {
+		menu.circle.show('next',false);
+		menu.showHelp2();
+	});
 
-	menu.circle.text('Rotate your device to change the speed of the music',.3,function() {});
+	menu.circle.image('assets/patent-rolle.jpg',function() {
+	});
+}
+
+// ---------------------------------------------------------------------------------------
+
+MenuLib.prototype.showHelp2 = function()
+{
+	var menu = this;
+
+	menu.circle.show('close',true,function() {
+		menu.circle.show('close',false);
+		menu.circle.show('previous',false);
+		menu.showMain();
+	});
+	menu.circle.show('previous',true,function() {
+		menu.circle.show('previous',false);
+		menu.showHelp();
+	});
+
+	menu.circle.image('assets/patent-kurbel.jpg',function() {
+	});
 }
 
 // ---------------------------------------------------------------------------------------
@@ -309,7 +335,7 @@ MenuLib.prototype.initScratch = function()
 		menu.circle.rotate( -degrees);
 	});
 
-	var slots = [0,0,0,0,0,0,0,0,0,0];
+	var slots = [null,null,null,null,null,null,null,null,null,null];
 	var lastDegree = menu.compass.gpsDegree;
 	var perfectSpeed = false;
 	var direction = 1;
@@ -329,23 +355,31 @@ MenuLib.prototype.initScratch = function()
 		var sum = 0;
 		for( var i = 1; i < slots.length; ++i) {
 			slots[i-1] = slots[i];
-			sum += slots[i];
+			if( slots[i] != null) {
+				sum += slots[i];
+			}
 		}
-		slots[slots.length-1] = diff;
-		sum += diff;
+		if( slots[0] == null) {
+			slots[slots.length-1] = 0;
+		} else  {
+			slots[slots.length-1] = diff;
+		}
+		sum += slots[slots.length-1];
 
 		var scratch = false;
 		var i = slots.length - 1;
-		if(( slots[i-0] >  menu.thresholdScratchMin) && (slots[i-0] <  menu.thresholdScratchMax) &&
-		    (slots[i-1] < -menu.thresholdScratchMin) && (slots[i-1] > -menu.thresholdScratchMax) &&
-		    (slots[i-2] >  menu.thresholdScratchMin) && (slots[i-2] <  menu.thresholdScratchMax))
-		{
-			scratch = true;
-		} else if(( slots[i-0] < -menu.thresholdScratchMin) && (slots[i-0] > -menu.thresholdScratchMax) &&
-		           (slots[i-1] >  menu.thresholdScratchMin) && (slots[i-1] <  menu.thresholdScratchMax) &&
-		           (slots[i-2] < -menu.thresholdScratchMin) && (slots[i-2] > -menu.thresholdScratchMax))
-		{
-			scratch = true;
+		if( slots[0] != null) {
+			if(( slots[i-0] >  menu.thresholdScratchMin) && (slots[i-0] <  menu.thresholdScratchMax) &&
+				(slots[i-1] < -menu.thresholdScratchMin) && (slots[i-1] > -menu.thresholdScratchMax) &&
+				(slots[i-2] >  menu.thresholdScratchMin) && (slots[i-2] <  menu.thresholdScratchMax))
+			{
+				scratch = true;
+			} else if(( slots[i-0] < -menu.thresholdScratchMin) && (slots[i-0] > -menu.thresholdScratchMax) &&
+					   (slots[i-1] >  menu.thresholdScratchMin) && (slots[i-1] <  menu.thresholdScratchMax) &&
+					   (slots[i-2] < -menu.thresholdScratchMin) && (slots[i-2] > -menu.thresholdScratchMax))
+			{
+				scratch = true;
+			}
 		}
 
 		var speed = sum / slots.length / 10;
@@ -357,17 +391,17 @@ MenuLib.prototype.initScratch = function()
 				menu.background.setTheme(menu.background.ORANGE);
 
 				if(direction == -1) {
-					menu.mainSound.source.stop(0);
-					menu.mainSound = menu.sound.play(0);
-					menu.mainSound.source.loop = true;
+//					menu.mainSound.source.stop(0);
+//					menu.mainSound = menu.sound.play(0);
+//					menu.mainSound.source.loop = true;
 				}
 			}
 			if( direction > 0) {
 				direction = -2;
-				menu.sound.setSpeed(menu.mainSound,.8);
+//				menu.sound.setSpeed(menu.mainSound,.8);
 			} else {
 				direction = 2;
-				menu.sound.setSpeed(menu.mainSound,3);
+//				menu.sound.setSpeed(menu.mainSound,3);
 			}
 
 			return;

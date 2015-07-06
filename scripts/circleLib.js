@@ -142,6 +142,36 @@ CircleLib.prototype.create = function()
 	});
 
 	element = document.createElement('div');
+	element.innerHTML = '<i class="icon-left fa-fw"></i>';
+	element.style.bottom = '.4em';
+	element.style.left = '.4em';
+	element.style.overflow = 'hidden';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'previous',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
+	element.innerHTML = '<i class="icon-right fa-fw"></i>';
+	element.style.bottom = '.4em';
+	element.style.right = '.4em';
+	element.style.overflow = 'hidden';
+	document.body.appendChild(element);
+
+	this.buttons.push({
+		title: 'next',
+		element: element,
+		show: false,
+		callback: null,
+		callback2: null
+	});
+
+	element = document.createElement('div');
 	element.innerHTML = '<i class="icon-cancel fa-fw"></i>';
 	element.style.top = '.4em';
 	element.style.right = '.4em';
